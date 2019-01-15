@@ -74,7 +74,7 @@ protected GooglePage googlePage = BasePage.create(getDriver(),GooglePage.class);
                 options.addArguments("headless");
                 options.addArguments("window-size=1200x600");
                 driver = new ChromeDriver();
-//                maximizeWindow();
+                maximizeWindow();
             }
             if ("htmlunit".equals(browser)) {
                 driver = new HtmlUnitDriver(true);
