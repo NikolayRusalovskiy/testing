@@ -1,10 +1,12 @@
 package testgui;
 
 
+import com.gl.citrus.SystemBlockPage;
 import com.gl.pages.BasePage;
 import com.gl.pages.GooglePage;
 import com.gl.utils.TestProperties;
 import com.gl.utils.WebDriverScreenshotListener;
+import com.sun.jna.platform.FileUtils;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -19,12 +21,13 @@ import org.testng.annotations.Listeners;
 import ru.yandex.qatools.allure.annotations.Attachment;
 import ru.yandex.qatools.allure.annotations.Step;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Files;
 
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +42,9 @@ public abstract class BaseTestCase {
     public String taxId = "";
     public String msgId = "";
     public String currentUrl = "";
-protected GooglePage googlePage = BasePage.create(getDriver(),GooglePage.class);
+    protected GooglePage googlePage = BasePage.create(getDriver(), GooglePage.class);
+
+    protected SystemBlockPage systemBlockPage = BasePage.create(getDriver(), SystemBlockPage.class);
 
     @BeforeSuite(alwaysRun = true)
     public void setUpBeforeSuite() throws Exception {
@@ -137,11 +142,46 @@ protected GooglePage googlePage = BasePage.create(getDriver(),GooglePage.class);
     }
 
     @Attachment(value = "Screenshot")
-    public byte[] takeScreenShot(){
-        return  ((TakesScreenshot)getDriver()).getScreenshotAs(OutputType.BYTES);
+    public byte[] takeScreenShot() {
+        return ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.BYTES);
     }
 
-        public String generateTaxId() {
+    public void takeScreenShotAsFile() {
+        File tmp = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
+        String name = "src\\test\\resources\\"+"shot_"+ UUID.randomUUID() +".jpeg";
+        File dst = new File(name);
+
+        try {
+            copyFileUsingStream(tmp, dst);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void copyFileUsingStream(File source, File dest) throws IOException {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            is = new FileInputStream(source);
+            os = new FileOutputStream(dest);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = is.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+        } finally {
+            is.close();
+            os.close();
+        }
+    }
+
+
+    public void takeshotASFile(){
+      ChromeDriver chromeDriver = new ChromeDriver();
+
+
+    }
+    public String generateTaxId() {
         String resInn = "";
         Integer[] array = new Integer[]{10, 5, 7, 9, 4, 6, 10, 5, 7};
         Integer[] inn = new Integer[]{1, 2, 1, 1, 1, 1, 1, 7, 4};

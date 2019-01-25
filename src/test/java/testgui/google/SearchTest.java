@@ -8,8 +8,10 @@ public class SearchTest extends BaseTestCase {
     @Test
     @Description("Fisrt test")
     public void getSearchTest() throws InterruptedException {
-        driver.get("https://www.google.com.ua/?hl=ru");
-        googlePage.searchG.sendKeys("Google");
-        Thread.sleep(5000);
+        while (true) {
+            driver.get("https://www.google.com.ua/?hl=ru");
+            googlePage.searchG.sendKeys("Google");
+            Thread.sleep(5000);
+        }
     }
 }
