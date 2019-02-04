@@ -2,7 +2,7 @@
 <suite name="GUI tests suite" parallel="tests" thread-count="2">
     <test name="Google test project suite">
         <classes>
-            <class name="testgui.google.SearchTest"/>
+            <class name="testapi.Repository"/>
         </classes>
     </test>
 </suite>

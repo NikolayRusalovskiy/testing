@@ -6,27 +6,32 @@ import com.gl.pages.BasePage;
 import com.gl.pages.GooglePage;
 import com.gl.utils.TestProperties;
 import com.gl.utils.WebDriverScreenshotListener;
-import com.sun.jna.platform.FileUtils;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.*;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-
+import org.openqa.selenium.remote.Augmenter;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 import ru.yandex.qatools.allure.annotations.Attachment;
 import ru.yandex.qatools.allure.annotations.Step;
+import ru.yandex.qatools.ashot.*;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
+import ru.yandex.qatools.ashot.shooting.ViewportPastingDecorator;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
-
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -148,11 +153,23 @@ public abstract class BaseTestCase {
 
     public void takeScreenShotAsFile() {
         File tmp = ((TakesScreenshot) getDriver()).getScreenshotAs(OutputType.FILE);
-        String name = "src\\test\\resources\\"+"shot_"+ UUID.randomUUID() +".jpeg";
+        String name = "src\\test\\resources\\" + "shot_" + UUID.randomUUID() + ".jpeg";
         File dst = new File(name);
 
         try {
             copyFileUsingStream(tmp, dst);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void takeAShot() {
+        Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver);
+
+        String name = "src\\test\\resources\\AShot\\" + "shot_" + UUID.randomUUID() + ".jpeg";
+
+        try {
+            ImageIO.write(myScreenshot.getImage(), "JPEG", new File(name));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -176,11 +193,12 @@ public abstract class BaseTestCase {
     }
 
 
-    public void takeshotASFile(){
-      ChromeDriver chromeDriver = new ChromeDriver();
+    public void takeshotASFile() {
+        ChromeDriver chromeDriver = new ChromeDriver();
 
 
     }
+
     public String generateTaxId() {
         String resInn = "";
         Integer[] array = new Integer[]{10, 5, 7, 9, 4, 6, 10, 5, 7};
